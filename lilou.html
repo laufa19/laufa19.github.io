@@ -254,24 +254,38 @@ let dy = homeLat - lat;
 
 let len = Math.sqrt(dx*dx + dy*dy);
 
-/* vecteur perpendiculaire */
+/* sécurité si les 2 points sont identiques */
 
-let offsetLat = midLat + (-dx/len) * 0.002;
-let offsetLon = midLon + (dy/len) * 0.002;
+if(len === 0){
+  len = 0.000001;
+}
+
+/* vecteur perpendiculaire + petit décalage */
+
+let offset = 0.00025;
+
+let offsetLat = midLat + (-dx / len) * offset;
+let offsetLon = midLon + (dy / len) * offset;
 
 /* marker distance */
 
 const distanceMarker = L.marker(
-[offsetLat, offsetLon],
-{
-icon: L.divIcon({
-html:
-"<div style='color:white;background:#000;padding:6px 12px;border-radius:8px;font-size:18px;white-space:nowrap;'>"+texte+"</div>",
-iconSize:[90,30],
-iconAnchor:[45,15],
-className:""
-})
-}
+  [offsetLat, offsetLon],
+  {
+    icon: L.divIcon({
+      html:
+        "<div style='" +
+        "color:#ff3b3b;" +
+        "font-weight:bold;" +
+        "font-size:20px;" +
+        "white-space:nowrap;" +
+        "text-shadow:0 0 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8);" +
+        "'>" + texte + "</div>",
+      iconSize:[120,24],
+      iconAnchor:[60,12],
+      className:""
+    })
+  }
 ).addTo(map);
 
     catMarker.bindPopup("🐾 Chat trouvé ici<br>" + texte + " de la maison");
@@ -285,8 +299,8 @@ className:""
       homeMarker.setIcon(makeEmojiIcon("🏠", size));
     }
 
-    const group = new L.featureGroup([catMarker, homeMarker, line]);
-    map.fitBounds(group.getBounds(), {padding:[40,40]});
+const group = new L.featureGroup([catMarker, homeMarker, line, distanceMarker]);
+map.fitBounds(group.getBounds(), {padding:[40,40]});
 
     /* Important : attendre que le zoom final soit posé */
     map.whenReady(function(){
