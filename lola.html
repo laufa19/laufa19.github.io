@@ -214,17 +214,18 @@ attribution:'© OpenStreetMap'
 /* icônes */
 
 let catIcon = L.divIcon({
-html:"🐾",
-iconSize:[30,30],
+html:"<div style='font-size:120px; line-height:120px;'>🐾</div>",
+iconSize:[120,120],
+iconAnchor:[60,60],
 className:""
 });
 
 let homeIcon = L.divIcon({
-html:"🏠",
-iconSize:[30,30],
+html:"<div style='font-size:120px; line-height:120px;'>🏠</div>",
+iconSize:[120,120],
+iconAnchor:[60,60],
 className:""
 });
-
 
 /* markers */
 
@@ -270,7 +271,9 @@ L.marker(
 [(lat+homeLat)/2,(lon+homeLon)/2],
 {
 icon: L.divIcon({
-html:"<div style='color:white;background:#000;padding:4px 8px;border-radius:6px;font-size:14px;'>"+texte+"</div>",
+html:"<div style='color:white;background:#000;padding:6px 12px;border-radius:8px;font-size:18px;white-space:nowrap;'>"+texte+"</div>",
+iconSize:[120,40],
+iconAnchor:[60,20],
 className:""
 })
 }
