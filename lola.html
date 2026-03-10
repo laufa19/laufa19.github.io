@@ -60,6 +60,8 @@ margin:15px 0;
 
 }
 
+/* BOUTONS */
+
 .button{
 
 display:block;
@@ -81,6 +83,8 @@ text-decoration:none;
 color:white;
 
 border:none;
+
+box-sizing:border-box;
 
 }
 
@@ -133,7 +137,7 @@ color:#7fb3ff;
 
 
 <a class="button call" href="tel:+33672714336">
-📞 Appeler immédiatement
+📞 Appeler ma famille
 </a>
 
 
@@ -148,7 +152,7 @@ color:#7fb3ff;
 
 
 <button class="button map" onclick="openMap()">
-🗺 Ouvrir la carte
+🗺 Voir ma position
 </button>
 
 
@@ -179,6 +183,14 @@ laurent.fayet.email@gmail.com
 
 <script>
 
+/* adresse de la maison */
+
+let homeLat = 45.5485;
+let homeLon = 2.3090;
+
+
+/* envoi position */
+
 function sendLocation(){
 
 if(navigator.geolocation){
@@ -201,6 +213,8 @@ window.location.href="sms:+33672714336?body="+encodeURIComponent(msg);
 }
 
 
+/* afficher position + maison */
+
 function openMap(){
 
 if(navigator.geolocation){
@@ -210,7 +224,13 @@ navigator.geolocation.getCurrentPosition(function(pos){
 let lat=pos.coords.latitude;
 let lon=pos.coords.longitude;
 
-window.open("https://www.google.com/maps?q="+lat+","+lon);
+/* carte avec 2 points */
+
+let url="https://www.google.com/maps/dir/"
++lat+","+lon+"/"
++homeLat+","+homeLon;
+
+window.open(url);
 
 });
 
