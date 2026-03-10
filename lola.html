@@ -194,12 +194,11 @@ let map = L.map('map').setView([lat,lon],15);
 /* fond IGN */
 
 L.tileLayer(
-'https://wxs.ign.fr/essentiels/geoportail/wmts?'+
-'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0'+
-'&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2'+
-'&STYLE=normal&FORMAT=image/png'+
-'&TILEMATRIXSET=PM'+
-'&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}'
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+maxZoom:19,
+attribution:'© OpenStreetMap'
+}
 ).addTo(map);
 
 
