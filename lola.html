@@ -46,13 +46,6 @@ h1{
 margin:10px 0;
 }
 
-.alert{
-color:#ff5a5a;
-font-size:20px;
-font-weight:bold;
-margin:15px 0;
-}
-
 .button{
 display:block;
 width:100%;
@@ -100,10 +93,6 @@ a{color:#7fb3ff;}
 
 <h1>🐾 Lola Fayet</h1>
 
-<div class="alert">
-⚠️ Si vous me trouvez ma famille me cherche
-</div>
-
 <a class="button call" href="tel:+33672714336">
 📞 Appeler ma famille
 </a>
@@ -149,6 +138,30 @@ let homeLat = 45.536151;
 let homeLon = 2.298581;
 
 
+/* distance Haversine */
+
+function distance(lat1, lon1, lat2, lon2){
+
+let R = 6371000;
+
+let φ1 = lat1*Math.PI/180;
+let φ2 = lat2*Math.PI/180;
+
+let Δφ = (lat2-lat1)*Math.PI/180;
+let Δλ = (lon2-lon1)*Math.PI/180;
+
+let a =
+Math.sin(Δφ/2)*Math.sin(Δφ/2)+
+Math.cos(φ1)*Math.cos(φ2)*
+Math.sin(Δλ/2)*Math.sin(Δλ/2);
+
+let c = 2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+
+return R*c;
+
+}
+
+
 /* envoyer SMS avec position */
 
 function sendLocation(){
@@ -176,7 +189,7 @@ window.location.href =
 }
 
 
-/* afficher carte IGN */
+/* afficher carte */
 
 function showMap(){
 
@@ -187,11 +200,7 @@ navigator.geolocation.getCurrentPosition(function(pos){
 let lat = pos.coords.latitude;
 let lon = pos.coords.longitude;
 
-/* créer carte */
-
-let map = L.map('map').setView([lat,lon],15);
-
-/* fond IGN */
+let map = L.map('map');
 
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -202,15 +211,13 @@ attribution:'© OpenStreetMap'
 ).addTo(map);
 
 
-/* icône chat */
+/* icônes */
 
 let catIcon = L.divIcon({
 html:"🐾",
 iconSize:[30,30],
 className:""
 });
-
-/* icône maison */
 
 let homeIcon = L.divIcon({
 html:"🏠",
@@ -219,21 +226,16 @@ className:""
 });
 
 
-/* marker chat */
+/* markers */
 
-L.marker([lat,lon],{icon:catIcon})
-.addTo(map)
-.bindPopup("🐾 Chat trouvé ici");
+let catMarker =
+L.marker([lat,lon],{icon:catIcon}).addTo(map);
 
-
-/* marker maison */
-
-L.marker([homeLat,homeLon],{icon:homeIcon})
-.addTo(map)
-.bindPopup("🏠 Maison : 6 route du Sagard");
+let homeMarker =
+L.marker([homeLat,homeLon],{icon:homeIcon}).addTo(map);
 
 
-/* ligne entre les deux */
+/* ligne */
 
 L.polyline(
 [
@@ -242,6 +244,32 @@ L.polyline(
 ],
 {color:"orange"}
 ).addTo(map);
+
+
+/* distance */
+
+let d = distance(lat,lon,homeLat,homeLon);
+
+let texte;
+
+if(d < 1000){
+
+texte = Math.round(d)+" m";
+
+}else{
+
+texte = (d/1000).toFixed(2)+" km";
+
+}
+
+catMarker.bindPopup("🐾 Chat trouvé ici<br>"+texte+" de la maison");
+
+
+/* cadrer carte pour voir les deux */
+
+let group = new L.featureGroup([catMarker,homeMarker]);
+
+map.fitBounds(group.getBounds(),{padding:[50,50]});
 
 });
 
