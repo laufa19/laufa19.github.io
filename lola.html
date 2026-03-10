@@ -8,6 +8,9 @@
 
 <title>🐾 Lola Fayet</title>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <style>
 
 body{
@@ -47,7 +50,6 @@ margin-bottom:15px;
 
 h1{
 margin:10px 0;
-font-weight:600;
 }
 
 .alert{
@@ -60,22 +62,16 @@ margin:15px 0;
 
 }
 
-/* BOUTONS */
-
 .button{
 
 display:block;
-
 width:100%;
-
 padding:16px;
-
 margin:12px 0;
 
 border-radius:12px;
 
 font-size:19px;
-
 font-weight:bold;
 
 text-decoration:none;
@@ -86,37 +82,35 @@ border:none;
 
 box-sizing:border-box;
 
+cursor:pointer;
+
 }
 
-.call{
-background:#e84141;
-}
+.call{background:#e84141;}
+.sms{background:#00a884;}
+.loc{background:#2e86ff;}
+.map{background:#7a5cff;}
 
-.sms{
-background:#00a884;
-}
+#map{
 
-.loc{
-background:#2e86ff;
-}
+height:300px;
+width:100%;
 
-.map{
-background:#7a5cff;
+margin-top:15px;
+
+border-radius:15px;
+
 }
 
 .info{
 
 margin-top:16px;
-
 font-size:17px;
-
 color:#ccc;
 
 }
 
-a{
-color:#7fb3ff;
-}
+a{color:#7fb3ff;}
 
 </style>
 
@@ -135,47 +129,37 @@ color:#7fb3ff;
 ⚠️ Si vous me trouvez ma famille me cherche
 </div>
 
-
 <a class="button call" href="tel:+33672714336">
 📞 Appeler ma famille
 </a>
-
 
 <a class="button sms" href="sms:+33672714336">
 💬 Envoyer un SMS
 </a>
 
-
 <button class="button loc" onclick="sendLocation()">
 📍 Envoyer ma position
 </button>
 
-
-<button class="button map" onclick="openMap()">
-🗺 Voir ma position
+<button class="button map" onclick="showMap()">
+🗺 Voir la carte
 </button>
 
+<div id="map"></div>
 
 <div class="info">
-
 6 route du Sagard<br>
 19200 Ussel
-
 </div>
 
 <div class="info">
-
-✉️  
-<a href="mailto:laurent.fayet.email@gmail.com">
+✉️ <a href="mailto:laurent.fayet.email@gmail.com">
 laurent.fayet.email@gmail.com
 </a>
-
 </div>
 
 <div class="info">
-
 <strong>Tatouage :</strong> 177XZV
-
 </div>
 
 </div>
@@ -183,39 +167,15 @@ laurent.fayet.email@gmail.com
 
 <script>
 
-/* adresse de la maison */
+/* coordonnées maison */
 
-let homeLat = 45.5485;
-let homeLon = 2.3090;
+let homeLat = 45.5486;
+let homeLon = 2.3092;
 
 
-/* envoi position */
+/* envoyer SMS avec position */
 
 function sendLocation(){
-
-if(navigator.geolocation){
-
-navigator.geolocation.getCurrentPosition(function(pos){
-
-let lat=pos.coords.latitude;
-let lon=pos.coords.longitude;
-
-let map="https://www.google.com/maps?q="+lat+","+lon;
-
-let msg="J'ai trouvé Lola ici : "+map;
-
-window.location.href="sms:+33672714336?body="+encodeURIComponent(msg);
-
-});
-
-}
-
-}
-
-
-/* afficher position + maison */
-
-function openMap(){
 
 if(navigator.geolocation){
 
@@ -224,19 +184,64 @@ navigator.geolocation.getCurrentPosition(function(pos){
 let lat = pos.coords.latitude;
 let lon = pos.coords.longitude;
 
-/* Adresse maison */
+let map = "https://maps.google.com/?q="+lat+","+lon;
 
-let home = "6 route du Sagard, 19200 Ussel";
+let msg = "Bonjour, j'ai trouvé Lola ici : "+map;
 
-/* ouvrir Google Maps avec position chat → maison */
+window.location.href =
+"sms:+33672714336?body="+encodeURIComponent(msg);
 
-let url =
-"https://www.google.com/maps/dir/?api=1"
-+"&origin="+lat+","+lon
-+"&destination="+encodeURIComponent(home)
-+"&travelmode=walking";
+});
 
-window.open(url);
+}
+
+}
+
+
+/* afficher carte */
+
+function showMap(){
+
+if(navigator.geolocation){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+let lat = pos.coords.latitude;
+let lon = pos.coords.longitude;
+
+/* créer carte */
+
+let map = L.map('map').setView([lat,lon],14);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+maxZoom:19
+}).addTo(map);
+
+/* icone chat */
+
+let catIcon = L.icon({
+iconUrl:'https://cdn-icons-png.flaticon.com/512/616/616408.png',
+iconSize:[40,40]
+});
+
+/* icone maison */
+
+let homeIcon = L.icon({
+iconUrl:'https://cdn-icons-png.flaticon.com/512/69/69524.png',
+iconSize:[40,40]
+});
+
+/* marker chat */
+
+L.marker([lat,lon],{icon:catIcon})
+.addTo(map)
+.bindPopup("🐾 Lola trouvée ici");
+
+/* marker maison */
+
+L.marker([homeLat,homeLon],{icon:homeIcon})
+.addTo(map)
+.bindPopup("🏠 Maison de Lola");
 
 });
 
