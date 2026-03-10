@@ -38,9 +38,7 @@ border-radius:18px;
 margin-bottom:15px;
 }
 
-h1{
-margin:10px 0;
-}
+h1{margin:10px 0;}
 
 .alert{
 color:#ff5a5a;
@@ -87,6 +85,7 @@ a{color:#7fb3ff;}
 </style>
 
 </head>
+
 
 <body>
 
@@ -135,12 +134,14 @@ laurent.fayet.email@gmail.com
 
 </div>
 
+
 <script>
 
 /* coordonnées maison */
 
-let homeLat = 45.54977;
-let homeLon = 2.30867;
+let homeLat = 45.54896;
+let homeLon = 2.30913;
+
 
 /* SMS position */
 
@@ -185,31 +186,43 @@ L.tileLayer(
 {maxZoom:19}
 ).addTo(map);
 
-/* icone chat */
+
+/* icône chat */
 
 let catIcon = L.icon({
-iconUrl:'https://cdn-icons-png.flaticon.com/512/2138/2138440.png',
+iconUrl:'https://cdn-icons-png.flaticon.com/512/1864/1864593.png',
 iconSize:[42,42]
 });
 
-/* icone maison */
+/* icône maison */
 
 let homeIcon = L.icon({
-iconUrl:'https://cdn-icons-png.flaticon.com/512/1946/1946436.png',
+iconUrl:'https://cdn-icons-png.flaticon.com/512/25/25694.png',
 iconSize:[42,42]
 });
 
-/* chat */
+
+/* position chat */
 
 L.marker([lat,lon],{icon:catIcon})
 .addTo(map)
 .bindPopup("🐾 Lola trouvée ici");
 
-/* maison */
+
+/* position maison */
 
 L.marker([homeLat,homeLon],{icon:homeIcon})
 .addTo(map)
 .bindPopup("🏠 Maison de Lola");
+
+
+/* ligne entre les deux */
+
+L.polyline([
+[lat,lon],
+[homeLat,homeLon]
+],{color:'orange'}).addTo(map);
+
 
 });
 
@@ -218,6 +231,7 @@ L.marker([homeLat,homeLon],{icon:homeIcon})
 }
 
 </script>
+
 
 </body>
 </html>
