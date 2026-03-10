@@ -128,13 +128,11 @@ a{
 </div>
 
 <script>
-/* coordonnées maison */
 const homeLat = 45.536151;
 const homeLon = 2.298581;
 
 let mapInstance = null;
 
-/* distance Haversine */
 function distance(lat1, lon1, lat2, lon2){
   const R = 6371000;
 
@@ -153,7 +151,6 @@ function distance(lat1, lon1, lat2, lon2){
   return R * c;
 }
 
-/* envoyer SMS avec position */
 function sendLocation(){
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(pos){
@@ -169,7 +166,6 @@ function sendLocation(){
   }
 }
 
-/* taille dynamique des icônes selon zoom */
 function makeEmojiIcon(emoji, size){
   return L.divIcon({
     html:
@@ -187,14 +183,10 @@ function makeEmojiIcon(emoji, size){
 }
 
 function computeIconSize(zoom){
-  /* Ajuste ici si tu veux plus grand ou plus petit */
   const size = Math.round(zoom * 3.2);
-
-  /* borne mini / maxi pour rester propre */
   return Math.max(22, Math.min(size, 56));
 }
 
-/* afficher carte */
 function showMap(){
   if(!navigator.geolocation){
     return;
@@ -240,53 +232,41 @@ function showMap(){
       texte = (d / 1000).toFixed(2) + " km";
     }
 
-/* position milieu */
+    let midLat = (lat + homeLat) / 2;
+    let midLon = (lon + homeLon) / 2;
 
-let midLat = (lat + homeLat) / 2;
-let midLon = (lon + homeLon) / 2;
+    let dx = homeLon - lon;
+    let dy = homeLat - lat;
 
-/* vecteur direction */
+    let len = Math.sqrt(dx*dx + dy*dy);
 
-let dx = homeLon - lon;
-let dy = homeLat - lat;
+    if(len === 0){
+      len = 0.000001;
+    }
 
-/* longueur */
+    let offset = 0.00025;
 
-let len = Math.sqrt(dx*dx + dy*dy);
+    let offsetLat = midLat + (-dx / len) * offset;
+    let offsetLon = midLon + (dy / len) * offset;
 
-/* sécurité si les 2 points sont identiques */
-
-if(len === 0){
-  len = 0.000001;
-}
-
-/* vecteur perpendiculaire + petit décalage */
-
-let offset = 0.00025;
-
-let offsetLat = midLat + (-dx / len) * offset;
-let offsetLon = midLon + (dy / len) * offset;
-
-/* marker distance */
-
-const distanceMarker = L.marker(
-  [offsetLat, offsetLon],
-  {
-    icon: L.divIcon({
-      html:
-        "<div style='" +
-        "color:#ff3b3b;" +
-        "font-weight:bold;" +
-        "font-size:20px;" +
-        "white-space:nowrap;" +
-        "text-shadow:0 0 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8);" +
-        "'>" + texte + "</div>",
-      iconSize:[120,24],
-      iconAnchor:[60,12],
-      className:""
-    })
-  }
-).addTo(map);
+    const distanceMarker = L.marker(
+      [offsetLat, offsetLon],
+      {
+        icon: L.divIcon({
+          html:
+            "<div style='" +
+            "color:#ff3b3b;" +
+            "font-weight:bold;" +
+            "font-size:20px;" +
+            "white-space:nowrap;" +
+            "text-shadow:0 0 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8);" +
+            "'>" + texte + "</div>",
+          iconSize:[120,24],
+          iconAnchor:[60,12],
+          className:""
+        })
+      }
+    ).addTo(map);
 
     catMarker.bindPopup("🐾 Chat trouvé ici<br>" + texte + " de la maison");
     homeMarker.bindPopup("🏠 Maison : 6 route du Sagard");
@@ -299,10 +279,9 @@ const distanceMarker = L.marker(
       homeMarker.setIcon(makeEmojiIcon("🏠", size));
     }
 
-const group = new L.featureGroup([catMarker, homeMarker, line, distanceMarker]);
-map.fitBounds(group.getBounds(), {padding:[40,40]});
+    const group = new L.featureGroup([catMarker, homeMarker, line, distanceMarker]);
+    map.fitBounds(group.getBounds(), {padding:[40,40]});
 
-    /* Important : attendre que le zoom final soit posé */
     map.whenReady(function(){
       setTimeout(function(){
         resizeIcons();
