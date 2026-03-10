@@ -221,14 +221,20 @@ if(navigator.geolocation){
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let lat=pos.coords.latitude;
-let lon=pos.coords.longitude;
+let lat = pos.coords.latitude;
+let lon = pos.coords.longitude;
 
-/* carte avec 2 points */
+/* Adresse maison */
 
-let url="https://www.google.com/maps/dir/"
-+lat+","+lon+"/"
-+homeLat+","+homeLon;
+let home = "6 route du Sagard, 19200 Ussel";
+
+/* ouvrir Google Maps avec position chat → maison */
+
+let url =
+"https://www.google.com/maps/dir/?api=1"
++"&origin="+lat+","+lon
++"&destination="+encodeURIComponent(home)
++"&travelmode=walking";
 
 window.open(url);
 
