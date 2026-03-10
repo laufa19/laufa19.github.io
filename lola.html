@@ -1,52 +1,195 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8">
-  <title>🐾 Lola Fayet</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-      background: #f7f7f7;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    img {
-      max-width: 220px;
-      width: 100%;
-      height: auto;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
+<title>🐾 Lola Fayet</title>
 
-    h1 {
-      margin-top: 10px;
-    }
-  </style>
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f8;
+text-align:center;
+margin:0;
+padding:20px;
+}
+
+.card{
+background:white;
+max-width:420px;
+margin:auto;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+img{
+width:220px;
+border-radius:50%;
+margin-bottom:15px;
+border:5px solid #eee;
+}
+
+h1{
+margin:10px 0;
+}
+
+.alert{
+color:#d40000;
+font-size:20px;
+font-weight:bold;
+margin:15px 0;
+}
+
+button,a.button{
+
+display:block;
+width:100%;
+padding:16px;
+margin:12px 0;
+
+font-size:20px;
+font-weight:bold;
+
+border:none;
+border-radius:12px;
+
+text-decoration:none;
+
+color:white;
+
+}
+
+.call{
+background:#ff4d4d;
+}
+
+.sms{
+background:#00b894;
+}
+
+.loc{
+background:#0984e3;
+}
+
+.map{
+background:#6c5ce7;
+}
+
+.info{
+margin-top:15px;
+font-size:17px;
+}
+
+</style>
+
 </head>
+
 
 <body>
 
-  <img src="lola.png" alt="lola">
+<div class="card">
 
-  <h1>🐾 Lola Fayet</h1>
+<img src="lola.png">
 
-  <p>6 route du Sagard</p>
-  <p>19200 Ussel</p>
+<h1>🐾 Lola Fayet</h1>
 
-  <p>
-    📞 <a href="tel:+33672714336">06 72 71 43 36</a>
-  </p>
+<div class="alert">
+⚠️ J'ai probablement une famille qui me cherche
+</div>
 
-  <p>
-    ✉️ <a href="mailto:laurent.fayet.email@gmail.com">
-      laurent.fayet.email@gmail.com
-    </a>
-  </p>
+<a class="button call" href="tel:+33672714336">
+📞 Appeler immédiatement
+</a>
 
-  <p><strong>Tatouage :</strong> 177XZV</p>
+<a class="button sms" href="sms:+33672714336">
+💬 Envoyer un SMS
+</a>
+
+<button class="loc" onclick="sendLocation()">
+📍 Envoyer ma position
+</button>
+
+<button class="map" onclick="openMap()">
+🗺 Voir ma position sur carte
+</button>
+
+<div class="info">
+
+6 route du Sagard<br>
+19200 Ussel
+
+</div>
+
+<div class="info">
+
+✉️  
+<a href="mailto:laurent.fayet.email@gmail.com">
+laurent.fayet.email@gmail.com
+</a>
+
+</div>
+
+<div class="info">
+
+<strong>Tatouage :</strong> 177XZV
+
+</div>
+
+</div>
+
+
+<script>
+
+function sendLocation(){
+
+if(navigator.geolocation){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+let lat=pos.coords.latitude;
+let lon=pos.coords.longitude;
+
+let map="https://www.google.com/maps?q="+lat+","+lon;
+
+window.location.href=
+"sms:+33672714336?body=J'ai trouvé Lola ici : "+map;
+
+});
+
+}
+
+else{
+
+alert("La géolocalisation n'est pas disponible");
+
+}
+
+}
+
+
+function openMap(){
+
+if(navigator.geolocation){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+let lat=pos.coords.latitude;
+let lon=pos.coords.longitude;
+
+window.open("https://www.google.com/maps?q="+lat+","+lon);
+
+});
+
+}
+
+}
+
+</script>
 
 </body>
 </html>
