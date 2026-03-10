@@ -264,6 +264,18 @@ texte = (d/1000).toFixed(2)+" km";
 
 catMarker.bindPopup("🐾 Chat trouvé ici<br>"+texte+" de la maison");
 
+/* afficher distance sur la carte */
+
+L.marker(
+[(lat+homeLat)/2,(lon+homeLon)/2],
+{
+icon: L.divIcon({
+html:"<div style='color:white;background:#000;padding:4px 8px;border-radius:6px;font-size:14px;'>"+texte+"</div>",
+className:""
+})
+}
+).addTo(map);
+
 
 /* cadrer carte pour voir les deux */
 
