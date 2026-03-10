@@ -1,11 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>🐾 Lilou Fayet</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-<!DOCTYPE html>
-<html lang="fr">
 
 <head>
 <meta charset="UTF-8">
@@ -21,48 +15,49 @@ src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js">
 </script>
 
 <style>
+
 body{
-  background:#111;
-  font-family:Arial, sans-serif;
-  color:#eee;
-  text-align:center;
-  margin:0;
-  padding:25px;
+background:#111;
+font-family:Arial, sans-serif;
+color:#eee;
+text-align:center;
+margin:0;
+padding:25px;
 }
 
 .card{
-  background:#1b1b1b;
-  max-width:420px;
-  margin:auto;
-  padding:25px;
-  border-radius:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.6);
+background:#1b1b1b;
+max-width:420px;
+margin:auto;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.6);
 }
 
 img{
-  width:100%;
-  max-width:260px;
-  border-radius:18px;
-  margin-bottom:15px;
+width:100%;
+max-width:260px;
+border-radius:18px;
+margin-bottom:15px;
 }
 
 h1{
-  margin:10px 0;
+margin:10px 0;
 }
 
 .button{
-  display:block;
-  width:100%;
-  padding:16px;
-  margin:12px 0;
-  border-radius:12px;
-  font-size:19px;
-  font-weight:bold;
-  text-decoration:none;
-  color:white;
-  border:none;
-  box-sizing:border-box;
-  cursor:pointer;
+display:block;
+width:100%;
+padding:16px;
+margin:12px 0;
+border-radius:12px;
+font-size:19px;
+font-weight:bold;
+text-decoration:none;
+color:white;
+border:none;
+box-sizing:border-box;
+cursor:pointer;
 }
 
 .call{background:#e84141;}
@@ -71,21 +66,22 @@ h1{
 .map{background:#7a5cff;}
 
 #map{
-  height:320px;
-  width:100%;
-  margin-top:15px;
-  border-radius:15px;
+height:320px;
+width:100%;
+margin-top:15px;
+border-radius:15px;
 }
 
 .info{
-  margin-top:16px;
-  font-size:17px;
-  color:#ccc;
+margin-top:16px;
+font-size:17px;
+color:#ccc;
 }
 
 a{
-  color:#7fb3ff;
+color:#7fb3ff;
 }
+
 </style>
 </head>
 
@@ -93,253 +89,45 @@ a{
 
 <div class="card">
 
-  <img src="lilou.png" alt="lilou">
+<img src="lilou.png" alt="lilou">
 
-  <h1>🐾 Lilou FAYET</h1>
+<h1>🐾 Lilou FAYET</h1>
 
-  <a class="button call" href="tel:+33672714336">
-    📞 Appeler ma famille
-  </a>
+<a class="button call" href="tel:+33672714336">
+📞 Appeler ma famille
+</a>
 
-  <a class="button sms" href="sms:+33672714336">
-    💬 Envoyer un SMS
-  </a>
+<a class="button sms" href="sms:+33672714336">
+💬 Envoyer un SMS
+</a>
 
-  <button class="button loc" onclick="sendLocation()">
-    📍 Envoyer ma position
-  </button>
+<button class="button loc" onclick="sendLocation()">
+📍 Envoyer ma position
+</button>
 
-  <button class="button map" onclick="showMap()">
-    🗺 Voir la carte
-  </button>
+<button class="button map" onclick="showMap()">
+🗺 Voir la carte
+</button>
 
-  <div id="map"></div>
+<div id="map"></div>
 
-  <div class="info">
-    6 route du Sagard<br>
-    19200 Ussel
-  </div>
-
-  <div class="info">
-    ✉️
-    <a href="mailto:laurent.fayet.email@gmail.com">
-      laurent.fayet.email@gmail.com
-    </a>
-  </div>
-
-  <div class="info">
-    <strong>Tatouage :</strong> 177XZF
-  </div>
-
+<div class="info">
+6 route du Sagard<br>
+19200 Ussel
 </div>
 
-<script>
-/* coordonnées maison */
-const homeLat = 45.536151;
-const homeLon = 2.298581;
+<div class="info">
+✉️
+<a href="mailto:laurent.fayet.email@gmail.com">
+laurent.fayet.email@gmail.com
+</a>
+</div>
 
-let mapInstance = null;
+<div class="info">
+<strong>Tatouage :</strong> 177XZF
+</div>
 
-/* distance Haversine */
-function distance(lat1, lon1, lat2, lon2){
-  const R = 6371000;
-
-  const phi1 = lat1 * Math.PI / 180;
-  const phi2 = lat2 * Math.PI / 180;
-  const dPhi = (lat2 - lat1) * Math.PI / 180;
-  const dLambda = (lon2 - lon1) * Math.PI / 180;
-
-  const a =
-    Math.sin(dPhi/2) * Math.sin(dPhi/2) +
-    Math.cos(phi1) * Math.cos(phi2) *
-    Math.sin(dLambda/2) * Math.sin(dLambda/2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c;
-}
-
-/* envoyer SMS avec position */
-function sendLocation(){
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(function(pos){
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
-
-      const mapUrl = "https://maps.google.com/?q=" + lat + "," + lon;
-      const msg = "Bonjour, j'ai trouvé Lilou ici : " + mapUrl;
-
-      window.location.href =
-        "sms:+33672714336?body=" + encodeURIComponent(msg);
-    });
-  }
-}
-
-/* taille dynamique des icônes selon zoom */
-function makeEmojiIcon(emoji, size){
-  return L.divIcon({
-    html:
-      "<div style='" +
-      "font-size:" + size + "px;" +
-      "line-height:" + size + "px;" +
-      "width:" + size + "px;" +
-      "height:" + size + "px;" +
-      "text-align:center;" +
-      "'>" + emoji + "</div>",
-    className: "",
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2]
-  });
-}
-
-function computeIconSize(zoom){
-  /* Ajuste ici si tu veux plus grand ou plus petit */
-  const size = Math.round(zoom * 3.2);
-
-  /* borne mini / maxi pour rester propre */
-  return Math.max(22, Math.min(size, 56));
-}
-
-/* afficher carte */
-function showMap(){
-  if(!navigator.geolocation){
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(function(pos){
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
-
-    if(mapInstance){
-      mapInstance.remove();
-      mapInstance = null;
-    }
-
-    const map = L.map('map');
-    mapInstance = map;
-
-    L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-      }
-    ).addTo(map);
-
-    const catMarker = L.marker([lat, lon]).addTo(map);
-    const homeMarker = L.marker([homeLat, homeLon]).addTo(map);
-
-    const line = L.polyline(
-      [
-        [lat, lon],
-        [homeLat, homeLon]
-      ],
-      {color:"orange"}
-    ).addTo(map);
-
-    const d = distance(lat, lon, homeLat, homeLon);
-
-    let texte;
-    if(d < 1000){
-      texte = Math.round(d) + " m";
-    }else{
-      texte = (d / 1000).toFixed(2) + " km";
-    }
-
-    const distanceMarker = L.marker(
-      [(lat + homeLat) / 2, (lon + homeLon) / 2],
-      {
-        icon: L.divIcon({
-          html:
-            "<div style='" +
-            "color:white;" +
-            "background:#000;" +
-            "padding:6px 12px;" +
-            "border-radius:8px;" +
-            "font-size:18px;" +
-            "white-space:nowrap;" +
-            "display:inline-block;" +
-            "'>" + texte + "</div>",
-          iconSize:[90,30],
-          iconAnchor:[45,15],
-          className:""
-        })
-      }
-    ).addTo(map);
-
-    catMarker.bindPopup("🐾 Chat trouvé ici<br>" + texte + " de la maison");
-    homeMarker.bindPopup("🏠 Maison : 6 route du Sagard");
-
-    function resizeIcons(){
-      const zoom = map.getZoom();
-      const size = computeIconSize(zoom);
-
-      catMarker.setIcon(makeEmojiIcon("🐾", size));
-      homeMarker.setIcon(makeEmojiIcon("🏠", size));
-    }
-
-    const group = new L.featureGroup([catMarker, homeMarker, line]);
-    map.fitBounds(group.getBounds(), {padding:[40,40]});
-
-    /* Important : attendre que le zoom final soit posé */
-    map.whenReady(function(){
-      setTimeout(function(){
-        resizeIcons();
-      }, 50);
-    });
-
-    map.on("zoomend", function(){
-      resizeIcons();
-    });
-  });
-}
-</script>
-
-</body>
-</html>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-      background: #f7f7f7;
-    }
-
-    img {
-      max-width: 220px;
-      width: 100%;
-      height: auto;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
-
-    h1 {
-      margin-top: 10px;
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- Photo du chat -->
-  <img src="lilou.png" alt="lilou">
-
-  <h1>🐾 Lilou Fayet</h1>
-
-  <p>6 route du Sagard</p>
-  <p>19200 Ussel</p>
-
-  <p>
-    📞 <a href="tel:+33672714336">06 72 71 43 36</a>
-  </p>
-
-  <p>
-    ✉️ <a href="mailto:laurent.fayet.email@gmail.com">
-      laurent.fayet.email@gmail.com
-    </a>
-  </p>
-
-  <p><strong>Tatouage :</strong> 177XZF</p>
+</div>
 
 </body>
 </html>
