@@ -8,8 +8,12 @@
 
 <title>🐾 Lola Fayet</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+
+<script
+src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js">
+</script>
 
 <style>
 
@@ -38,7 +42,9 @@ border-radius:18px;
 margin-bottom:15px;
 }
 
-h1{margin:10px 0;}
+h1{
+margin:10px 0;
+}
 
 .alert{
 color:#ff5a5a;
@@ -86,7 +92,6 @@ a{color:#7fb3ff;}
 
 </head>
 
-
 <body>
 
 <div class="card">
@@ -123,7 +128,8 @@ a{color:#7fb3ff;}
 </div>
 
 <div class="info">
-✉️ <a href="mailto:laurent.fayet.email@gmail.com">
+✉️
+<a href="mailto:laurent.fayet.email@gmail.com">
 laurent.fayet.email@gmail.com
 </a>
 </div>
@@ -137,10 +143,13 @@ laurent.fayet.email@gmail.com
 
 <script>
 
-/* adresse maison */
+/* coordonnées maison */
 
-let homeAddress = "6 route du Sagard, 19200 Ussel";
+let homeLat = 45.54896;
+let homeLon = 2.30913;
 
+
+/* envoyer SMS avec position */
 
 function sendLocation(){
 
@@ -151,9 +160,11 @@ navigator.geolocation.getCurrentPosition(function(pos){
 let lat = pos.coords.latitude;
 let lon = pos.coords.longitude;
 
-let map = "https://maps.google.com/?q="+lat+","+lon;
+let map =
+"https://maps.google.com/?q="+lat+","+lon;
 
-let msg = "Bonjour, j'ai trouvé Lola ici : "+map;
+let msg =
+"Bonjour, j'ai trouvé Lola ici : "+map;
 
 window.location.href =
 "sms:+33672714336?body="+encodeURIComponent(msg);
@@ -165,7 +176,7 @@ window.location.href =
 }
 
 
-/* carte */
+/* afficher carte IGN */
 
 function showMap(){
 
@@ -178,11 +189,17 @@ let lon = pos.coords.longitude;
 
 /* créer carte */
 
-let map = L.map('map').setView([lat,lon],14);
+let map = L.map('map').setView([lat,lon],15);
+
+/* fond IGN */
 
 L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{maxZoom:19}
+'https://wxs.ign.fr/essentiels/geoportail/wmts?'+
+'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0'+
+'&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2'+
+'&STYLE=normal&FORMAT=image/png'+
+'&TILEMATRIXSET=PM'+
+'&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}'
 ).addTo(map);
 
 
@@ -190,7 +207,7 @@ L.tileLayer(
 
 let catIcon = L.divIcon({
 html:"🐾",
-iconSize:[40,40],
+iconSize:[30,30],
 className:""
 });
 
@@ -198,7 +215,7 @@ className:""
 
 let homeIcon = L.divIcon({
 html:"🏠",
-iconSize:[40,40],
+iconSize:[30,30],
 className:""
 });
 
@@ -207,35 +224,25 @@ className:""
 
 L.marker([lat,lon],{icon:catIcon})
 .addTo(map)
-.bindPopup("🐾 Lola trouvée ici");
+.bindPopup("🐾 Chat trouvé ici");
 
-
-/* trouver coordonnées maison */
-
-fetch("https://nominatim.openstreetmap.org/search?format=json&q="+encodeURIComponent(homeAddress))
-
-.then(res=>res.json())
-
-.then(data=>{
-
-let homeLat = data[0].lat;
-let homeLon = data[0].lon;
 
 /* marker maison */
 
 L.marker([homeLat,homeLon],{icon:homeIcon})
 .addTo(map)
-.bindPopup("🏠 Maison de Lola");
+.bindPopup("🏠 Maison : 6 route du Sagard");
 
 
-/* ligne */
+/* ligne entre les deux */
 
-L.polyline([
+L.polyline(
+[
 [lat,lon],
 [homeLat,homeLon]
-],{color:'orange'}).addTo(map);
-
-});
+],
+{color:"orange"}
+).addTo(map);
 
 });
 
