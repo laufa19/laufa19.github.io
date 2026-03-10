@@ -15,7 +15,7 @@
 
 body{
 background:#111;
-font-family:Arial, sans-serif;
+font-family:Arial;
 color:#eee;
 text-align:center;
 margin:0;
@@ -23,29 +23,19 @@ padding:25px;
 }
 
 .card{
-
 background:#1b1b1b;
-
 max-width:420px;
 margin:auto;
-
 padding:25px;
-
 border-radius:20px;
-
 box-shadow:0 10px 30px rgba(0,0,0,0.6);
-
 }
 
 img{
-
 width:100%;
 max-width:260px;
-
 border-radius:18px;
-
 margin-bottom:15px;
-
 }
 
 h1{
@@ -53,37 +43,25 @@ margin:10px 0;
 }
 
 .alert{
-
 color:#ff5a5a;
 font-size:20px;
 font-weight:bold;
-
 margin:15px 0;
-
 }
 
 .button{
-
 display:block;
 width:100%;
 padding:16px;
 margin:12px 0;
-
 border-radius:12px;
-
 font-size:19px;
 font-weight:bold;
-
 text-decoration:none;
-
 color:white;
-
 border:none;
-
 box-sizing:border-box;
-
 cursor:pointer;
-
 }
 
 .call{background:#e84141;}
@@ -92,22 +70,16 @@ cursor:pointer;
 .map{background:#7a5cff;}
 
 #map{
-
 height:300px;
 width:100%;
-
 margin-top:15px;
-
 border-radius:15px;
-
 }
 
 .info{
-
 margin-top:16px;
 font-size:17px;
 color:#ccc;
-
 }
 
 a{color:#7fb3ff;}
@@ -115,7 +87,6 @@ a{color:#7fb3ff;}
 </style>
 
 </head>
-
 
 <body>
 
@@ -164,16 +135,14 @@ laurent.fayet.email@gmail.com
 
 </div>
 
-
 <script>
 
 /* coordonnées maison */
 
-let homeLat = 45.5486;
-let homeLon = 2.3092;
+let homeLat = 45.54977;
+let homeLon = 2.30867;
 
-
-/* envoyer SMS avec position */
+/* SMS position */
 
 function sendLocation(){
 
@@ -209,35 +178,34 @@ navigator.geolocation.getCurrentPosition(function(pos){
 let lat = pos.coords.latitude;
 let lon = pos.coords.longitude;
 
-/* créer carte */
+let map = L.map('map').setView([lat,lon],15);
 
-let map = L.map('map').setView([lat,lon],14);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-maxZoom:19
-}).addTo(map);
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{maxZoom:19}
+).addTo(map);
 
 /* icone chat */
 
 let catIcon = L.icon({
-iconUrl:'https://cdn-icons-png.flaticon.com/512/616/616408.png',
-iconSize:[40,40]
+iconUrl:'https://cdn-icons-png.flaticon.com/512/2138/2138440.png',
+iconSize:[42,42]
 });
 
 /* icone maison */
 
 let homeIcon = L.icon({
-iconUrl:'https://cdn-icons-png.flaticon.com/512/69/69524.png',
-iconSize:[40,40]
+iconUrl:'https://cdn-icons-png.flaticon.com/512/1946/1946436.png',
+iconSize:[42,42]
 });
 
-/* marker chat */
+/* chat */
 
 L.marker([lat,lon],{icon:catIcon})
 .addTo(map)
 .bindPopup("🐾 Lola trouvée ici");
 
-/* marker maison */
+/* maison */
 
 L.marker([homeLat,homeLon],{icon:homeIcon})
 .addTo(map)
@@ -250,7 +218,6 @@ L.marker([homeLat,homeLon],{icon:homeIcon})
 }
 
 </script>
-
 
 </body>
 </html>
