@@ -129,7 +129,6 @@ laurent.fayet.email@gmail.com
 
 </div>
 
-
 <script>
 
 /* coordonnées maison */
@@ -211,29 +210,10 @@ attribution:'© OpenStreetMap'
 ).addTo(map);
 
 
-/* icônes */
-
-let catIcon = L.divIcon({
-html:"<div style='font-size:120px; line-height:120px;'>🐾</div>",
-iconSize:[4,4],
-iconAnchor:[2,2],
-className:""
-});
-
-let homeIcon = L.divIcon({
-html:"<div style='font-size:120px; line-height:120px;'>🏠</div>",
-iconSize:[120,120],
-iconAnchor:[60,60],
-className:""
-});
-
 /* markers */
 
-let catMarker =
-L.marker([lat,lon],{icon:catIcon}).addTo(map);
-
-let homeMarker =
-L.marker([homeLat,homeLon],{icon:homeIcon}).addTo(map);
+let catMarker = L.marker([lat,lon]).addTo(map);
+let homeMarker = L.marker([homeLat,homeLon]).addTo(map);
 
 
 /* ligne */
@@ -263,9 +243,8 @@ texte = (d/1000).toFixed(2)+" km";
 
 }
 
-catMarker.bindPopup("🐾 Chat trouvé ici<br>"+texte+" de la maison");
 
-/* afficher distance sur la carte */
+/* texte distance */
 
 L.marker(
 [(lat+homeLat)/2,(lon+homeLon)/2],
@@ -280,7 +259,39 @@ className:""
 ).addTo(map);
 
 
-/* cadrer carte pour voir les deux */
+/* resize icones selon zoom */
+
+function resizeIcons(){
+
+let zoom = map.getZoom();
+
+let size = zoom*6;
+
+catMarker.setIcon(
+L.divIcon({
+html:"<div style='font-size:"+size+"px;'>🐾</div>",
+className:"",
+iconSize:[size,size],
+iconAnchor:[size/2,size/2]
+})
+);
+
+homeMarker.setIcon(
+L.divIcon({
+html:"<div style='font-size:"+size+"px;'>🏠</div>",
+className:"",
+iconSize:[size,size],
+iconAnchor:[size/2,size/2]
+})
+);
+
+}
+
+map.on("zoomend",resizeIcons);
+resizeIcons();
+
+
+/* cadrer carte */
 
 let group = new L.featureGroup([catMarker,homeMarker]);
 
