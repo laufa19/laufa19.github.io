@@ -68,7 +68,7 @@ cursor:pointer;
 .map{background:#7a5cff;}
 
 #map{
-height:300px;
+height:320px;
 width:100%;
 margin-top:15px;
 border-radius:15px;
@@ -137,13 +137,10 @@ laurent.fayet.email@gmail.com
 
 <script>
 
-/* coordonnées maison */
+/* adresse maison */
 
-let homeLat = 45.54896;
-let homeLon = 2.30913;
+let homeAddress = "6 route du Sagard, 19200 Ussel";
 
-
-/* SMS position */
 
 function sendLocation(){
 
@@ -168,7 +165,7 @@ window.location.href =
 }
 
 
-/* afficher carte */
+/* carte */
 
 function showMap(){
 
@@ -179,7 +176,9 @@ navigator.geolocation.getCurrentPosition(function(pos){
 let lat = pos.coords.latitude;
 let lon = pos.coords.longitude;
 
-let map = L.map('map').setView([lat,lon],15);
+/* créer carte */
+
+let map = L.map('map').setView([lat,lon],14);
 
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -189,40 +188,54 @@ L.tileLayer(
 
 /* icône chat */
 
-let catIcon = L.icon({
-iconUrl:'https://cdn-icons-png.flaticon.com/512/1864/1864593.png',
-iconSize:[42,42]
+let catIcon = L.divIcon({
+html:"🐾",
+iconSize:[40,40],
+className:""
 });
 
 /* icône maison */
 
-let homeIcon = L.icon({
-iconUrl:'https://cdn-icons-png.flaticon.com/512/25/25694.png',
-iconSize:[42,42]
+let homeIcon = L.divIcon({
+html:"🏠",
+iconSize:[40,40],
+className:""
 });
 
 
-/* position chat */
+/* marker chat */
 
 L.marker([lat,lon],{icon:catIcon})
 .addTo(map)
 .bindPopup("🐾 Lola trouvée ici");
 
 
-/* position maison */
+/* trouver coordonnées maison */
+
+fetch("https://nominatim.openstreetmap.org/search?format=json&q="+encodeURIComponent(homeAddress))
+
+.then(res=>res.json())
+
+.then(data=>{
+
+let homeLat = data[0].lat;
+let homeLon = data[0].lon;
+
+/* marker maison */
 
 L.marker([homeLat,homeLon],{icon:homeIcon})
 .addTo(map)
 .bindPopup("🏠 Maison de Lola");
 
 
-/* ligne entre les deux */
+/* ligne */
 
 L.polyline([
 [lat,lon],
 [homeLat,homeLon]
 ],{color:'orange'}).addTo(map);
 
+});
 
 });
 
@@ -231,7 +244,6 @@ L.polyline([
 }
 
 </script>
-
 
 </body>
 </html>
