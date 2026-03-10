@@ -11,78 +11,107 @@
 <style>
 
 body{
-font-family:Arial;
-background:#f4f6f8;
+background:#111;
+font-family:Arial, sans-serif;
+color:#eee;
 text-align:center;
 margin:0;
-padding:20px;
+padding:25px;
 }
 
 .card{
-background:white;
+
+background:#1b1b1b;
+
 max-width:420px;
 margin:auto;
+
 padding:25px;
+
 border-radius:20px;
-box-shadow:0 10px 25px rgba(0,0,0,0.15);
+
+box-shadow:0 10px 30px rgba(0,0,0,0.6);
+
 }
 
 img{
-width:220px;
-border-radius:50%;
+
+width:100%;
+max-width:260px;
+
+border-radius:18px;
+
 margin-bottom:15px;
-border:5px solid #eee;
+
 }
 
 h1{
 margin:10px 0;
+font-weight:600;
 }
 
 .alert{
-color:#d40000;
+
+color:#ff5a5a;
 font-size:20px;
 font-weight:bold;
+
 margin:15px 0;
+
 }
 
-button,a.button{
+.button{
 
 display:block;
+
 width:100%;
+
 padding:16px;
+
 margin:12px 0;
 
-font-size:20px;
-font-weight:bold;
-
-border:none;
 border-radius:12px;
+
+font-size:19px;
+
+font-weight:bold;
 
 text-decoration:none;
 
 color:white;
 
+border:none;
+
 }
 
 .call{
-background:#ff4d4d;
+background:#e84141;
 }
 
 .sms{
-background:#00b894;
+background:#00a884;
 }
 
 .loc{
-background:#0984e3;
+background:#2e86ff;
 }
 
 .map{
-background:#6c5ce7;
+background:#7a5cff;
 }
 
 .info{
-margin-top:15px;
+
+margin-top:16px;
+
 font-size:17px;
+
+color:#ccc;
+
+}
+
+a{
+color:#7fb3ff;
 }
 
 </style>
@@ -99,24 +128,29 @@ font-size:17px;
 <h1>🐾 Lola Fayet</h1>
 
 <div class="alert">
-⚠️ J'ai probablement une famille qui me cherche
+⚠️ Si vous me trouvez ma famille me cherche
 </div>
+
 
 <a class="button call" href="tel:+33672714336">
 📞 Appeler immédiatement
 </a>
 
+
 <a class="button sms" href="sms:+33672714336">
 💬 Envoyer un SMS
 </a>
 
-<button class="loc" onclick="sendLocation()">
+
+<button class="button loc" onclick="sendLocation()">
 📍 Envoyer ma position
 </button>
 
-<button class="map" onclick="openMap()">
-🗺 Voir ma position sur carte
+
+<button class="button map" onclick="openMap()">
+🗺 Ouvrir la carte
 </button>
+
 
 <div class="info">
 
@@ -156,16 +190,11 @@ let lon=pos.coords.longitude;
 
 let map="https://www.google.com/maps?q="+lat+","+lon;
 
-window.location.href=
-"sms:+33672714336?body=J'ai trouvé Lola ici : "+map;
+let msg="J'ai trouvé Lola ici : "+map;
+
+window.location.href="sms:+33672714336?body="+encodeURIComponent(msg);
 
 });
-
-}
-
-else{
-
-alert("La géolocalisation n'est pas disponible");
 
 }
 
@@ -190,6 +219,7 @@ window.open("https://www.google.com/maps?q="+lat+","+lon);
 }
 
 </script>
+
 
 </body>
 </html>
