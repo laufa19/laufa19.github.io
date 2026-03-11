@@ -2,6 +2,7 @@
 <html lang="fr">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -15,49 +16,69 @@ src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js">
 </script>
 
 <style>
+
 body{
   background-image:url("fond.jpg");
   background-size:cover;
   background-position:center;
+  background-repeat:no-repeat;
   background-attachment:fixed;
 
   font-family:Arial, sans-serif;
-  color:#eee;
+  color:#fff;
   text-align:center;
   margin:0;
-  padding:25px;
+  padding:30px;
+
+  min-height:100vh;
 }
 
+/* carte centrale */
+
 .card{
-  background:#1b1b1b;
   max-width:420px;
   margin:auto;
   padding:25px;
+
+  background:rgba(0,0,0,0.35);
+  backdrop-filter:blur(6px);
+
   border-radius:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.6);
+
+  box-shadow:0 10px 40px rgba(0,0,0,0.7);
 }
+
+/* photo chat */
+
 img{
   width:100%;
   max-width:260px;
-  border-radius:18px;
-  margin-bottom:15px;
+  margin-bottom:10px;
   background:transparent;
 }
 
+/* titre */
+
 h1{
   margin:10px 0;
+  text-shadow:0 2px 8px rgba(0,0,0,0.9);
 }
+
+/* boutons */
 
 .button{
   display:block;
   width:100%;
   padding:16px;
   margin:12px 0;
+
   border-radius:12px;
   font-size:19px;
   font-weight:bold;
+
   text-decoration:none;
   color:white;
+
   border:none;
   box-sizing:border-box;
   cursor:pointer;
@@ -68,6 +89,8 @@ h1{
 .loc{background:#2e86ff;}
 .map{background:#7a5cff;}
 
+/* carte */
+
 #map{
   height:320px;
   width:100%;
@@ -75,222 +98,254 @@ h1{
   border-radius:15px;
 }
 
+/* infos */
+
 .info{
   margin-top:16px;
   font-size:17px;
-  color:#ccc;
+  color:#eee;
 }
 
 a{
-  color:#7fb3ff;
+  color:#a8c6ff;
 }
+
 </style>
+
 </head>
 
 <body>
 
 <div class="card">
 
-  <img src="lola.png" alt="Lola">
+<img src="lola.png" alt="Lola">
 
-  <h1>🐾 Lola FAYET</h1>
+<h1>🐾 Lola FAYET</h1>
 
-  <a class="button call" href="tel:+33672714336">
-    📞 Appeler ma famille
-  </a>
+<a class="button call" href="tel:+33672714336">
+📞 Appeler ma famille
+</a>
 
-  <a class="button sms" href="sms:+33672714336">
-    💬 Envoyer un SMS
-  </a>
+<a class="button sms" href="sms:+33672714336">
+💬 Envoyer un SMS
+</a>
 
-  <button class="button loc" onclick="sendLocation()">
-    📍 Envoyer ma position
-  </button>
+<button class="button loc" onclick="sendLocation()">
+📍 Envoyer ma position
+</button>
 
-  <button class="button map" onclick="showMap()">
-    🗺 Voir la carte
-  </button>
+<button class="button map" onclick="showMap()">
+🗺 Voir la carte
+</button>
 
-  <div id="map"></div>
+<div id="map"></div>
 
-  <div class="info">
-    6 route du Sagard<br>
-    19200 Ussel
-  </div>
+<div class="info">
+6 route du Sagard<br>
+19200 Ussel
+</div>
 
-  <div class="info">
-    ✉️
-    <a href="mailto:laurent.fayet.email@gmail.com">
-      laurent.fayet.email@gmail.com
-    </a>
-  </div>
+<div class="info">
+✉️
+<a href="mailto:laurent.fayet.email@gmail.com">
+laurent.fayet.email@gmail.com
+</a>
+</div>
 
-  <div class="info">
-    <strong>Tatouage :</strong> 177XZV
-  </div>
+<div class="info">
+<strong>Tatouage :</strong> 177XZV
+</div>
 
 </div>
 
 <script>
+
 /* coordonnées maison */
+
 const homeLat = 45.536151;
 const homeLon = 2.298581;
 
 let mapInstance = null;
 
-/* distance Haversine */
+/* distance */
+
 function distance(lat1, lon1, lat2, lon2){
-  const R = 6371000;
 
-  const phi1 = lat1 * Math.PI / 180;
-  const phi2 = lat2 * Math.PI / 180;
-  const dPhi = (lat2 - lat1) * Math.PI / 180;
-  const dLambda = (lon2 - lon1) * Math.PI / 180;
+const R = 6371000;
 
-  const a =
-    Math.sin(dPhi/2) * Math.sin(dPhi/2) +
-    Math.cos(phi1) * Math.cos(phi2) *
-    Math.sin(dLambda/2) * Math.sin(dLambda/2);
+const φ1 = lat1*Math.PI/180;
+const φ2 = lat2*Math.PI/180;
 
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+const Δφ = (lat2-lat1)*Math.PI/180;
+const Δλ = (lon2-lon1)*Math.PI/180;
 
-  return R * c;
+const a =
+Math.sin(Δφ/2)*Math.sin(Δφ/2)+
+Math.cos(φ1)*Math.cos(φ2)*
+Math.sin(Δλ/2)*Math.sin(Δλ/2);
+
+const c = 2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+
+return R*c;
+
 }
 
-/* envoyer SMS avec position */
+/* SMS position */
+
 function sendLocation(){
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(function(pos){
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
 
-      const mapUrl = "https://maps.google.com/?q=" + lat + "," + lon;
-      const msg = "Bonjour, j'ai trouvé Lola ici : " + mapUrl;
+if(navigator.geolocation){
 
-      window.location.href =
-        "sms:+33672714336?body=" + encodeURIComponent(msg);
-    });
-  }
+navigator.geolocation.getCurrentPosition(function(pos){
+
+const lat = pos.coords.latitude;
+const lon = pos.coords.longitude;
+
+const mapUrl =
+"https://maps.google.com/?q="+lat+","+lon;
+
+const msg =
+"Bonjour, j'ai trouvé Lola ici : "+mapUrl;
+
+window.location.href =
+"sms:+33672714336?body="+encodeURIComponent(msg);
+
+});
+
 }
 
-/* taille dynamique des icônes selon zoom */
-function makeEmojiIcon(emoji, size){
-  return L.divIcon({
-    html:
-      "<div style='" +
-      "font-size:" + size + "px;" +
-      "line-height:" + size + "px;" +
-      "width:" + size + "px;" +
-      "height:" + size + "px;" +
-      "text-align:center;" +
-      "'>" + emoji + "</div>",
-    className: "",
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2]
-  });
+}
+
+/* icones */
+
+function makeEmojiIcon(emoji,size){
+
+return L.divIcon({
+
+html:
+"<div style='"+
+"font-size:"+size+"px;"+
+"line-height:"+size+"px;"+
+"width:"+size+"px;"+
+"height:"+size+"px;"+
+"text-align:center;"+
+"'>"+emoji+"</div>",
+
+className:"",
+iconSize:[size,size],
+iconAnchor:[size/2,size/2]
+
+});
+
 }
 
 function computeIconSize(zoom){
-  /* Ajuste ici si tu veux plus grand ou plus petit */
-  const size = Math.round(zoom * 3.2);
 
-  /* borne mini / maxi pour rester propre */
-  return Math.max(22, Math.min(size, 56));
+const size=Math.round(zoom*3.2);
+
+return Math.max(22,Math.min(size,56));
+
 }
 
-/* afficher carte */
+/* carte */
+
 function showMap(){
-  if(!navigator.geolocation){
-    return;
-  }
 
-  navigator.geolocation.getCurrentPosition(function(pos){
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
+if(!navigator.geolocation){return;}
 
-    if(mapInstance){
-      mapInstance.remove();
-      mapInstance = null;
-    }
+navigator.geolocation.getCurrentPosition(function(pos){
 
-    const map = L.map('map');
-    mapInstance = map;
+const lat=pos.coords.latitude;
+const lon=pos.coords.longitude;
 
-    L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-      }
-    ).addTo(map);
-
-    const catMarker = L.marker([lat, lon]).addTo(map);
-    const homeMarker = L.marker([homeLat, homeLon]).addTo(map);
-
-    const line = L.polyline(
-      [
-        [lat, lon],
-        [homeLat, homeLon]
-      ],
-      {color:"orange"}
-    ).addTo(map);
-
-    const d = distance(lat, lon, homeLat, homeLon);
-
-    let texte;
-    if(d < 1000){
-      texte = Math.round(d) + " m";
-    }else{
-      texte = (d / 1000).toFixed(2) + " km";
-    }
-
-    const distanceMarker = L.marker(
-      [(lat + homeLat) / 2, (lon + homeLon) / 2],
-      {
-        icon: L.divIcon({
-          html:
-            "<div style='" +
-            "color:white;" +
-            "background:#000;" +
-            "padding:6px 12px;" +
-            "border-radius:8px;" +
-            "font-size:18px;" +
-            "white-space:nowrap;" +
-            "display:inline-block;" +
-            "'>" + texte + "</div>",
-          iconSize:[90,30],
-          iconAnchor:[45,15],
-          className:""
-        })
-      }
-    ).addTo(map);
-
-    catMarker.bindPopup("🐾 Chat trouvé ici<br>" + texte + " de la maison");
-    homeMarker.bindPopup("🏠 Maison : 6 route du Sagard");
-
-    function resizeIcons(){
-      const zoom = map.getZoom();
-      const size = computeIconSize(zoom);
-
-      catMarker.setIcon(makeEmojiIcon("🐾", size));
-      homeMarker.setIcon(makeEmojiIcon("🏠", size));
-    }
-
-    const group = new L.featureGroup([catMarker, homeMarker, line]);
-    map.fitBounds(group.getBounds(), {padding:[40,40]});
-
-    /* Important : attendre que le zoom final soit posé */
-    map.whenReady(function(){
-      setTimeout(function(){
-        resizeIcons();
-      }, 50);
-    });
-
-    map.on("zoomend", function(){
-      resizeIcons();
-    });
-  });
+if(mapInstance){
+mapInstance.remove();
+mapInstance=null;
 }
+
+const map=L.map('map');
+mapInstance=map;
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+maxZoom:19,
+attribution:'© OpenStreetMap'
+}
+).addTo(map);
+
+/* markers */
+
+const catMarker=L.marker([lat,lon]).addTo(map);
+const homeMarker=L.marker([homeLat,homeLon]).addTo(map);
+
+/* ligne */
+
+const line=L.polyline(
+[
+[lat,lon],
+[homeLat,homeLon]
+],
+{color:"orange"}
+).addTo(map);
+
+/* distance */
+
+const d=distance(lat,lon,homeLat,homeLon);
+
+let texte;
+
+if(d<1000){
+texte=Math.round(d)+" m";
+}else{
+texte=(d/1000).toFixed(2)+" km";
+}
+
+const distanceMarker=L.marker(
+[(lat+homeLat)/2,(lon+homeLon)/2],
+{
+icon:L.divIcon({
+html:
+"<div style='color:#ff3b3b;font-weight:bold;font-size:20px;text-shadow:0 0 5px black;'>"+texte+"</div>",
+className:""
+})
+}
+).addTo(map);
+
+/* popups */
+
+catMarker.bindPopup("🐾 Chat trouvé ici<br>"+texte+" de la maison");
+
+homeMarker.bindPopup("🏠 Maison : 6 route du Sagard");
+
+/* resize icones */
+
+function resizeIcons(){
+
+const zoom=map.getZoom();
+const size=computeIconSize(zoom);
+
+catMarker.setIcon(makeEmojiIcon("🐾",size));
+homeMarker.setIcon(makeEmojiIcon("🏠",size));
+
+}
+
+/* cadrage */
+
+const group=new L.featureGroup([catMarker,homeMarker,line,distanceMarker]);
+
+map.fitBounds(group.getBounds(),{padding:[40,40]});
+
+map.whenReady(function(){
+setTimeout(function(){resizeIcons();},50);
+});
+
+map.on("zoomend",function(){resizeIcons();});
+
+});
+
+}
+
 </script>
 
 </body>
