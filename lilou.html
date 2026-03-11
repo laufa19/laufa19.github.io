@@ -17,68 +17,77 @@ src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js">
 
 <style>
 
-html{
-  height:100%;
-}
-
-html, body{
-  height:100%;
-  margin:0;
+html,body{
+height:100%;
+margin:0;
 }
 
 body{
-  min-height:100vh;
 
-  background:url("fond.jpg") no-repeat center center;
-  background-size:cover;
+min-height:100dvh;
 
-  font-family:Arial, sans-serif;
-  color:#fff;
-  text-align:center;
-  padding:30px;
+font-family:Arial, sans-serif;
+color:#fff;
+text-align:center;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:url("fond.jpg") center center / cover no-repeat fixed;
+
 }
 
 .card{
-  max-width:420px;
-  margin:auto;
-  padding:25px;
 
-  background:rgba(0,0,0,0.35);
-  backdrop-filter:blur(6px);
+max-width:420px;
+width:90%;
 
-  border-radius:20px;
+padding:30px;
 
-  box-shadow:0 10px 40px rgba(0,0,0,0.7);
+background:rgba(0,0,0,0.35);
+backdrop-filter:blur(6px);
+
+border-radius:20px;
+
+box-shadow:0 10px 40px rgba(0,0,0,0.7);
+
 }
 
 img{
-  width:100%;
-  max-width:260px;
-  margin-bottom:10px;
-  background:transparent;
+
+width:100%;
+max-width:260px;
+margin-bottom:10px;
+background:transparent;
+
 }
 
 h1{
-  margin:10px 0;
-  text-shadow:0 2px 8px rgba(0,0,0,0.9);
+
+margin:10px 0;
+text-shadow:0 2px 8px rgba(0,0,0,0.9);
+
 }
 
 .button{
-  display:block;
-  width:100%;
-  padding:16px;
-  margin:12px 0;
 
-  border-radius:12px;
-  font-size:19px;
-  font-weight:bold;
+display:block;
+width:100%;
+padding:16px;
+margin:12px 0;
 
-  text-decoration:none;
-  color:white;
+border-radius:12px;
+font-size:19px;
+font-weight:bold;
 
-  border:none;
-  box-sizing:border-box;
-  cursor:pointer;
+text-decoration:none;
+color:white;
+
+border:none;
+box-sizing:border-box;
+cursor:pointer;
+
 }
 
 .call{background:#e84141;}
@@ -87,20 +96,26 @@ h1{
 .map{background:#7a5cff;}
 
 #map{
-  height:320px;
-  width:100%;
-  margin-top:15px;
-  border-radius:15px;
+
+height:320px;
+width:100%;
+margin-top:15px;
+border-radius:15px;
+
 }
 
 .info{
-  margin-top:16px;
-  font-size:17px;
-  color:#eee;
+
+margin-top:16px;
+font-size:17px;
+color:#eee;
+
 }
 
 a{
-  color:#a8c6ff;
+
+color:#a8c6ff;
+
 }
 
 </style>
@@ -208,13 +223,7 @@ function makeEmojiIcon(emoji,size){
 return L.divIcon({
 
 html:
-"<div style='"+
-"font-size:"+size+"px;"+
-"line-height:"+size+"px;"+
-"width:"+size+"px;"+
-"height:"+size+"px;"+
-"text-align:center;"+
-"'>"+emoji+"</div>",
+"<div style='font-size:"+size+"px;line-height:"+size+"px;width:"+size+"px;height:"+size+"px;text-align:center;'>"+emoji+"</div>",
 
 className:"",
 iconSize:[size,size],
@@ -282,8 +291,7 @@ const distanceMarker=L.marker(
 [(lat+homeLat)/2,(lon+homeLon)/2],
 {
 icon:L.divIcon({
-html:
-"<div style='color:#ff3b3b;font-weight:bold;font-size:20px;text-shadow:0 0 5px black;'>"+texte+"</div>",
+html:"<div style='color:#ff3b3b;font-weight:bold;font-size:20px;text-shadow:0 0 5px black;'>"+texte+"</div>",
 className:""
 })
 }
